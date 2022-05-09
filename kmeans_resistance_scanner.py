@@ -3,12 +3,13 @@ import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
 
-WEBHOOK_URL = "https://discord.com/api/webhooks/hidden"
+WEBHOOK_URL = "https://discord.com/api/webhooks/hidden" #insert your Discord webhook here
+
+datasets_path = "crypto-scanners/datasets/1d_datasets"
 
 def get_optimum_clusters(df, saturation_point=0.01):
     '''
     With thanks to https://www.github.com/judopro for providing this function.
-    
     :param df: dataframe
     :param saturation_point: The amount of difference we are willing to detect
     :return: clusters with optimum K centers
@@ -41,10 +42,10 @@ def get_optimum_clusters(df, saturation_point=0.01):
     return optimum_clusters
 
 
-for filename in os.listdir('backtesting/datasets/1d_datasets'):
+for filename in os.listdir(datasets_path):
     
     #if filename == 'ADXUSDT.csv':
-    df = pd.read_csv('backtesting/datasets/1d_datasets/{}'.format(filename))
+    df = pd.read_csv(os.path.join(datasets_path, filename))
     
     if df.empty:
         continue
@@ -68,6 +69,7 @@ for filename in os.listdir('backtesting/datasets/1d_datasets'):
     # print(high_centers)
     
     for res in high_centers:
+        result = False
         if res > two_last_close and res < last_close and last_vol > max(df.iloc[-11:-2]['Volume']):
             print('{} is breaking out closing at {} over resistance at {}'.format(filename, last_close, res))
             result = True
